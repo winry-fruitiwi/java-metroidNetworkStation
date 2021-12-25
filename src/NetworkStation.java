@@ -12,12 +12,9 @@ import java.util.List;
 public class NetworkStation extends PApplet {
 	JSONArray json;
 
-	//	String[] passages;
-	//	int[][] highlightIndices;
-
 	List<String> passages;
 	List<Integer> durations;
-	List<List<Integer>> highlightIndices;
+	List<List<List<Integer>>> highlightIndices;
 
 	public static void main(String[] args) {
 		PApplet.main(new String[]{NetworkStation.class.getName()});
@@ -39,6 +36,7 @@ public class NetworkStation extends PApplet {
 	private void loadData() {
 		passages = new ArrayList<>();
 		durations = new ArrayList<>();
+		highlightIndices = new ArrayList<>();
 
 		// creating the json object
 		json = loadJSONArray("data/passages.json");
@@ -48,17 +46,31 @@ public class NetworkStation extends PApplet {
 		// the json object at a certain index that we can control so now extract
 		// the json array at the highlight index.
 
-		// TODO turn this into a loop later, i'm just not sure how to do it
-		// System.out.println(json.getJSONArray("passages").getJSONObject(0)
-		// .getJSONArray("highlightIndices"));
-
 		for (int i = 0; i < json.size(); i++) {
-			passages.add(json.getJSONObject(i).getString("text"));
-			durations.add(json.getJSONObject(i).getInt("ms"));
+			// our json object
+			JSONObject obj = json.getJSONObject(i);
+
+			passages.add(obj.getString("text"));
+			durations.add(obj.getInt("ms"));
+
+			List<List<Integer>> doubledIndices = new ArrayList<>();
+			JSONArray arr = obj.getJSONArray("highlightIndices");
+			// loop through the contents of the JSONArray
+			for (int j = 0; j < arr.size(); j++) {
+				JSONObject indexPair = arr.getJSONObject(j);
+				List<Integer> indices = new ArrayList<>();
+
+				indices.add(indexPair.getInt("start"));
+				indices.add(indexPair.getInt("end"));
+
+				doubledIndices.add(indices);
+			}
+			highlightIndices.add(doubledIndices);
 		}
 
 		System.out.println(passages);
 		System.out.println(durations);
+		System.out.println(highlightIndices);
 	}
 
 	@Override
