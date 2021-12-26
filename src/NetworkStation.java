@@ -1,3 +1,4 @@
+import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class NetworkStation extends PApplet {
 	JSONArray json;
+	PeasyCam cam;
 
 	List<String> passages;
 	List<Integer> durations;
@@ -22,15 +24,43 @@ public class NetworkStation extends PApplet {
 
 	@Override
 	public void settings() {
-		size(640, 360);
+		size(640, 360, P3D);
 	}
 
 	@Override
 	public void setup() {
 		rectMode(RADIUS);
 		colorMode(HSB, 360f, 100f, 100f, 100f);
+		cam = new PeasyCam(this, 0, 0, 0, 500);
 
 		loadData();
+	}
+
+	final int SATURATION = 100;
+	final int P_BRIGHTNESS = 100;
+	final int N_BRIGHTNESS = 40;
+
+	private void drawBlenderAxes() {
+		// x-axis
+		stroke(0, SATURATION, P_BRIGHTNESS);
+		line(0, 0, 4000, 0);
+
+		stroke(0, SATURATION, N_BRIGHTNESS);
+		line(-4000, 0, 0, 0);
+
+		// y-axis (Webstorm has the values inverted!)
+		stroke(120, SATURATION, P_BRIGHTNESS);
+		line(0, 0, 0, 4000);
+
+		stroke(120, SATURATION, N_BRIGHTNESS);
+		line(0, -4000, 0, 0);
+
+		// z-axis
+		stroke(240, SATURATION, P_BRIGHTNESS);
+		line(0, 0, 0, 0, 0, 4000);
+
+		stroke(240, SATURATION, N_BRIGHTNESS);
+		line(0, 0, -4000, 0, 0, 0);
 	}
 
 	private void loadData() {
@@ -76,11 +106,6 @@ public class NetworkStation extends PApplet {
 	@Override
 	public void draw() {
 		background(210, 100, 30, 100);
-		rect(mouseX, mouseY, 20, 20);
-	}
-
-	@Override
-	public void mousePressed() {
-		System.out.println(mouseX);
+		drawBlenderAxes();
 	}
 }
