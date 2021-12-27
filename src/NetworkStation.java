@@ -1,5 +1,7 @@
 import peasy.PeasyCam;
 import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PImage;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
@@ -13,6 +15,8 @@ import java.util.List;
 public class NetworkStation extends PApplet {
 	JSONArray json;
 	PeasyCam cam;
+	PFont font;
+	PImage textFrame;
 
 	List<String> passages;
 	List<Integer> durations;
@@ -32,8 +36,18 @@ public class NetworkStation extends PApplet {
 		rectMode(RADIUS);
 		colorMode(HSB, 360f, 100f, 100f, 100f);
 		cam = new PeasyCam(this, 0, 0, 0, 500);
+		font = createFont("data/gigamarujr.ttf", 14);
+		textFrame = loadImage("data/textFrame.png");
+
 
 		loadData();
+	}
+
+
+	private void renderTextFrame() {
+		cam.beginHUD();
+		image(textFrame, 0, 0, width, height);
+		cam.endHUD();
 	}
 
 	final int SATURATION = 100;
@@ -101,11 +115,14 @@ public class NetworkStation extends PApplet {
 		System.out.println(passages);
 		System.out.println(durations);
 		System.out.println(highlightIndices);
+
 	}
 
 	@Override
 	public void draw() {
 		background(210, 100, 30, 100);
 		drawBlenderAxes();
+
+		renderTextFrame();
 	}
 }
