@@ -13,14 +13,19 @@ import java.util.List;
  * teaches us how to use Processing inside IDEA
  */
 public class NetworkStation extends PApplet {
+	// essentials
 	JSONArray json;
 	PeasyCam cam;
 	PFont font;
 	PImage textFrame;
 
+	// all the lists!
 	List<String> passages;
 	List<Integer> durations;
 	List<List<List<Integer>>> highlightIndices;
+
+	// classes
+	DialogBox dialog;
 
 	public static void main(String[] args) {
 		PApplet.main(new String[]{NetworkStation.class.getName()});
@@ -38,9 +43,11 @@ public class NetworkStation extends PApplet {
 		cam = new PeasyCam(this, 0, 0, 0, 500);
 		font = createFont("data/gigamarujr.ttf", 14);
 		textFrame = loadImage("data/textFrame.png");
-
+		textFont(font, 14);
 
 		loadData();
+
+		dialog = new DialogBox(this, passages, highlightIndices, textFrame);
 	}
 
 
@@ -121,8 +128,14 @@ public class NetworkStation extends PApplet {
 	@Override
 	public void draw() {
 		background(210, 100, 30, 100);
-		drawBlenderAxes();
 
+		// basically the setup of this dialog system
+		drawBlenderAxes();
 		renderTextFrame();
+
+		// the real dialog part!
+		cam.beginHUD();
+		dialog.render();
+		cam.endHUD();
 	}
 }
