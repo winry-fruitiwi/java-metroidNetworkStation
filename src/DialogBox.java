@@ -10,10 +10,16 @@ public class DialogBox {
 	List<List<List<Integer>>> highlightIndices;
 	String hardCodePassage;
 	PApplet app;
+	List<List<Integer>> currentPair;
 	int index;
+	int passageIndex;
+	String passage;
 
 	DialogBox(PApplet app, List<String> passages,
 			  List<List<List<Integer>>> highlightIndices, PImage textFrame) {
+		this.index = 0;
+		this.passageIndex = 0;
+
 		// the text frame we use. I don't think this is necessary yet.
 		this.textFrame = textFrame;
 		// just a hardcoded passage for now.
@@ -27,7 +33,8 @@ public class DialogBox {
 		// a list of Adam's passages. I fixed a typo and a data point.
 		this.passages = passages;
 		this.highlightIndices = highlightIndices;
-		this.index = 0;
+		this.currentPair = highlightIndices.get(this.passageIndex);
+		this.passage = passages.get(this.passageIndex);
 	}
 
 	// this is what we made dialogBox for! renders the box.
@@ -41,21 +48,40 @@ public class DialogBox {
 		PVector cursor = new PVector(margin, 270 + this.app.textAscent());
 
 		this.app.textSize(18);
+		app.fill(0, 0, 100);
 		this.app.text("TIGREX", 62, 260);
 		this.app.textSize(14);
 
 		for (int i = 0; i < this.index; i++) {
-			char letter = this.hardCodePassage.charAt(i);
+			char letter = this.passage.charAt(i);
 
-			this.app.fill(0, 0, 100);
+			// draw the letter
+			try { // try to retrieve a set of highlight indices
+				if (
+						i >= currentPair.get(0).get(0) &&
+								i <= currentPair.get(0).get(1)
+				)
+					app.fill(60, 100, 100);
+				else if (
+						i >= currentPair.get(1).get(0) &&
+								i <= currentPair.get(1).get(0)
+				)
+					app.fill(60, 100, 100);
+				else
+					app.fill(0, 0, 100);
+			} catch (Exception e) { // if there's no index or too many indices,
+				// fill white
+				app.fill(0, 0, 100);
+			}
+
 			this.app.text(letter, cursor.x, cursor.y);
 
 			// start of word wrap.
 			if (letter == ' ') {
 				// we don't need a currentDelimiter, it's redundant!
-				int nextDelimiter = this.hardCodePassage.indexOf(" ", i + 1);
+				int nextDelimiter = this.passage.indexOf(" ", i + 1);
 
-				String nextWord = this.hardCodePassage.substring(
+				String nextWord = this.passage.substring(
 						i,
 						nextDelimiter + 1
 				);
@@ -74,10 +100,10 @@ public class DialogBox {
 		}
 
 		// if the frameCount is divisible by a certain number
-		if (app.frameCount % 3 == 0) {
+		if (app.frameCount % 1 == 0) {
 			this.index++;
-			if (this.index >= this.hardCodePassage.length()-1) {
-				this.index = this.hardCodePassage.length()-1;
+			if (this.index >= this.passage.length()-1) {
+				this.index = this.passage.length()-1;
 			}
 		}
 	}
