@@ -49,10 +49,10 @@ public class DialogBox {
 
 		this.app.textSize(18);
 		app.fill(0, 0, 100);
-		this.app.text("TIGREX", 62, 260);
+		this.app.text("ADAM", 62, 260);
 		this.app.textSize(14);
 
-		for (int i = 0; i < this.index; i++) {
+		for (int i = 0; i < this.index-1; i++) {
 			char letter = this.passage.charAt(i);
 
 			// draw the letter
@@ -64,7 +64,7 @@ public class DialogBox {
 					app.fill(60, 100, 100);
 				else if (
 						i >= currentPair.get(1).get(0) &&
-								i <= currentPair.get(1).get(0)
+								i <= currentPair.get(1).get(1)
 				)
 					app.fill(60, 100, 100);
 				else
@@ -100,10 +100,18 @@ public class DialogBox {
 		}
 
 		// if the frameCount is divisible by a certain number
-		if (app.frameCount % 1 == 0) {
+		if (app.frameCount % 3 == 0) {
 			this.index++;
-			if (this.index >= this.passage.length()-1) {
-				this.index = this.passage.length()-1;
+			if (this.index >= this.passage.length()+1) {
+				this.index = 0;
+				this.passageIndex += 1;
+
+				if (this.passageIndex > this.passages.size()-1) {
+					this.passageIndex = this.passages.size()-1;
+					this.index = this.passage.length() - 1;
+				}
+				this.passage = this.passages.get(this.passageIndex);
+				this.currentPair = this.highlightIndices.get(this.passageIndex);
 			}
 		}
 	}
