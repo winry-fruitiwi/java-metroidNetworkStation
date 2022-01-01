@@ -2,10 +2,12 @@ import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
+import processing.core.PVector;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,11 +20,13 @@ public class NetworkStation extends PApplet {
 	PeasyCam cam;
 	PFont font;
 	PImage textFrame;
+	int SPHERE_DETAIL;
 
 	// all the lists!
 	List<String> passages;
 	List<Integer> durations;
 	List<List<List<Integer>>> highlightIndices;
+	PVector[][] globe;
 
 	// classes
 	DialogBox dialog;
@@ -43,11 +47,16 @@ public class NetworkStation extends PApplet {
 		cam = new PeasyCam(this, 0, 0, 0, 500);
 		font = createFont("data/gigamarujr.ttf", 14);
 		textFrame = loadImage("data/textFrame.png");
+		SPHERE_DETAIL = 16;
 		textFont(font, 14);
 
 		loadData();
 
 		dialog = new DialogBox(this, passages, highlightIndices, textFrame);
+		initializeGlobeArray();
+
+		// just making sure that I have the right number of elements!
+		// System.out.println(Arrays.deepToString(globe));
 	}
 
 
@@ -125,11 +134,34 @@ public class NetworkStation extends PApplet {
 
 	}
 
+	private void initializeGlobeArray() {
+		// since Java can handle 2D arrays, we don't need to do much work.
+		// However, JavaScript doesn't support 2D arrays, so we have to
+		// initialize them ourselves.
+
+		// we have to add one because otherwise, we can't close the shape, so
+		// there will be a hole in our sphere!
+
+		/*TODO
+			  what I really did here
+			     found out that you can't really nest ArrayLists
+			     you can use a fix me without the space to represent a bad line!
+			     initialized the sphere detail
+			     made the globe an array of arrays of PVectors
+			     added a test in my setup
+		*/
+		globe = new PVector[SPHERE_DETAIL+1][SPHERE_DETAIL+1];
+	}
+
+	private void populateGlobe() {
+
+	}
+
 	@Override
 	public void draw() {
 		background(210, 100, 30, 100);
 
-		// basically the setup of this dialog system
+		// the setup of this dialog system
 		drawBlenderAxes();
 		renderTextFrame();
 

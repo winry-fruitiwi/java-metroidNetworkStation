@@ -95,7 +95,7 @@ public class DialogBox {
 				}
 			}
 
-			// advance the cursor. TODO Do not code past here, nya!
+			// advance the cursor. TODO Do not code past here in the loop!
 			cursor.add(app.textWidth(letter), 0);
 		}
 
