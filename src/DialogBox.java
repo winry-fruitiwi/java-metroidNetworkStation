@@ -100,7 +100,7 @@ public class DialogBox {
 		}
 
 		// if the frameCount is divisible by a certain number
-		if (app.frameCount % 3 == 0) {
+		if (app.frameCount % 1 == 0) {
 			this.index++;
 			if (this.index >= this.passage.length()+1) {
 				this.index = 0;

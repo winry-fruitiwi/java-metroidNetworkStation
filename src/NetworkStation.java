@@ -7,13 +7,14 @@ import processing.data.JSONArray;
 import processing.data.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+// FIXME import processing.sound.*;
 
 /**
  * Thanks to our hero Abe Pazos at https://vimeo.com/channels/p5idea, who
  * teaches us how to use Processing inside IDEA
  */
+@SuppressWarnings("NonAsciiCharacters")
 public class NetworkStation extends PApplet {
 	// essentials
 	JSONArray json;
@@ -21,15 +22,18 @@ public class NetworkStation extends PApplet {
 	PFont font;
 	PImage textFrame;
 	int SPHERE_DETAIL;
+	float r;
 
 	// all the lists!
 	List<String> passages;
 	List<Integer> durations;
 	List<List<List<Integer>>> highlightIndices;
 	PVector[][] globe;
+	// FIXME can't figure out audio file type
 
 	// classes
 	DialogBox dialog;
+    // FIXME SoundFile file;
 
 	public static void main(String[] args) {
 		PApplet.main(new String[]{NetworkStation.class.getName()});
@@ -48,6 +52,7 @@ public class NetworkStation extends PApplet {
 		font = createFont("data/gigamarujr.ttf", 14);
 		textFrame = loadImage("data/textFrame.png");
 		SPHERE_DETAIL = 16;
+		r = 100;
 		textFont(font, 14);
 
 		loadData();
@@ -154,7 +159,39 @@ public class NetworkStation extends PApplet {
 	}
 
 	private void populateGlobe() {
+		float x, y, z, θ, φ;
 
+		for (int i = 0; i < globe.length; i++) {
+			θ = map(i, 0, globe.length - 1, 0, PI);
+			for (int j = 0; j < globe[i].length; j++) {
+				// normally, we live in the x-y-z space. However, in
+				// spherical coordinates, we use r-θ-φ space. I have a proof
+				// with more details about this convergence. from my
+				// JavaScript comments:
+				// r is just the radius of our sphere.
+				// θ is the clockwise angle from the positive x-axis onto the
+				// xy plane, while φ is the clockwise angle from the positive
+				// z-axis onto our location vector (x, y, z).
+
+				φ = map(j, 0, globe[i].length - 1, 0, PI);
+
+				// I have some old proofs using trigonometry and 3D
+				// coordinates that prove this. It's far less messy than
+				// Wikipedia's version, which seems to involve heavy matrix
+				// math.
+				x = r * sin(φ) * cos(θ);
+				y = r * sin(φ) * sin(θ);
+				z = r * cos(φ);
+				globe[i][j] = new PVector(x, y, z);
+				strokeWeight(5);
+				stroke(0, 0, 100);
+				push();
+				rotateX(PI/2);
+				point(x, y, z);
+				pop();
+				strokeWeight(2);
+			}
+		}
 	}
 
 	@Override
@@ -164,6 +201,9 @@ public class NetworkStation extends PApplet {
 		// the setup of this dialog system
 		drawBlenderAxes();
 		renderTextFrame();
+
+		// Adam in the background, from my month of playing Metroid Dread
+		populateGlobe();
 
 		// the real dialog part!
 		cam.beginHUD();
